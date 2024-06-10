@@ -1,0 +1,129 @@
+import { TextStyles } from "../style/TextStyles.slint";
+import { CatppuccinPallete } from "../style/CatppuccinPallete.slint";
+// This file is loosely based on slint's std-lib widgets, but is more its own
+// thing.
+
+// #region ButtonTouchLayer
+
+component ButtonTouchLayer inherits TouchArea {
+    in property <length> border-radius;
+
+    forward-focus: focus-scope;
+
+
+    focus-scope := FocusScope {
+        x: 0;
+        width: 0;
+        enabled: root.enabled;
+
+        key-pressed(e) => {
+            if (e.text == " " || e.text == "\n") {
+                root.clicked();
+                return accept;
+            }
+            return reject;
+        }
+    }
+}
+
+// #region ButtonBase
+component ButtonBase {
+    in property <string> text;
+    in property <bool> enabled;
+    in property <image> icon;
+    in property <bool> colorize-icon;
+    in property <brush> text-color;
+    in property <float> text-opacity;
+    in property <length> layout-padding-left;
+    in property <length> layout-padding-right;
+    in property <length> border-radius;
+    out property <bool> pressed <=> touch.pressed;
+    callback clicked <=> touch.clicked;
+
+    min-width: layout.min-width;
+    min-height: layout.min-height;
+
+    touch := ButtonTouchLayer {
+        border-radius: root.border-radius;
+    }
+
+    layout := HorizontalLayout {
+        spacing: 8px;
+        padding-left: root.layout-padding-left;
+        padding-right: root.layout-padding-right;
+
+        if root.icon.width > 0 && root.icon.height > 0: Image {
+            source <=> root.icon;
+            width: 24px;
+            opacity: root.text-opacity;
+            colorize: root.colorize-icon ? root.text-color : transparent;
+        }
+        if root.text != "": Text {
+            text: root.text;
+            color: root.text-color;
+            opacity: root.text-opacity;
+            vertical-alignment: center;
+            horizontal-alignment: center;
+            font-weight: TextStyles.h2.font-weight;
+            accessible-role: none;
+
+            animate color {
+                duration: 250ms;
+                easing: ease;
+            }
+        }
+
+    }
+}
+// #endregion
+
+// #region Button
+export component Button {
+    in property <string> text <=> base.text;
+    in property <bool> enabled <=> base.enabled;
+    in property <image> icon <=> base.icon;
+    in property <bool> colorize-icon <=> base.colorize-icon;
+    in property <length> border-radius: 20px;
+    in property <brush> background-color: CatppuccinPallete.secondary-pane0;
+    in property <brush> checked-color: CatppuccinPallete.secondary-pane1;
+
+    callback clicked;
+
+    min-height: max(40px, base.min-height);
+    min-width: max(40px, base.min-width);
+
+    accessible-role: button;
+    accessible-action-default => {
+        base.clicked();
+    }
+
+    states [
+        pressed when base.pressed: {
+            background.background: root.checked-color;
+        }
+    ]
+
+    background := Rectangle {
+        width: 100%;
+        height: 100%;
+        border-radius: root.border-radius;
+        background: root.background-color;
+        drop-shadow-color: transparent;
+        drop-shadow-blur: 1px;
+        drop-shadow-offset-y: 1px;
+    }
+    base := ButtonBase {
+        layout-padding-left: 24px;
+        layout-padding-right: 24px;
+        height: 100%;
+        text-color: CatppuccinPallete.body;
+        text-opacity: 1.0;
+        border-radius: root.border-radius;
+
+        clicked => {
+            root.clicked();
+        }
+    }
+
+
+}

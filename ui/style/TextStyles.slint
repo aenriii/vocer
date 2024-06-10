@@ -1,0 +1,14 @@
+
+// loosely based on https://github.com/slint-ui/slint/blob/master/internal/compiler/widgets/material-base/styling.slint
+
+struct TextStyle {
+    font-size: relative-font-size,
+    font-weight: int
+}
+
+export global TextStyles {
+    out property <TextStyle> h1: { font-size: 32 * 0.0625rem, font-weight: 500 };
+    out property <TextStyle> h2: { font-size: 14 * 0.0625rem, font-weight: 500 };
+    out property <TextStyle> h3: { font-size: 12 * 0.0625rem, font-weight: 500 };
+    out property <TextStyle> body: { font-size: 12 * 0.0625rem, font-weight: 500 };
+}

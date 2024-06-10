@@ -1,0 +1,32 @@
+import { VerticalBox } from "std-widgets.slint";
+import { CatppuccinPallete } from "style/CatppuccinPallete.slint";
+import { Button } from "./kit.slint";
+
+export component AppWindow inherits Window {
+    in-out property<string> page: "loading...";
+    in-out property <string> pallete <=> CatppuccinPallete.flavor;
+    preferred-width: 700px;
+    preferred-height: 500px;
+    title: "vocer / \{root.page}";
+
+    background: CatppuccinPallete.background;
+
+
+    in-out property<int> counter: 42;
+    callback request-increase-value();
+    VerticalBox {
+        Text {
+            text: "Counter: \{root.counter}";
+            color: CatppuccinPallete.body;
+        }
+        Button {
+            text: "Increase value";
+            clicked => {
+                root.request-increase-value();
+            }
+            max-height: 40px;
+            max-width: 300px;
+            
+        }
+    }
+}
