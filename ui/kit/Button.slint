@@ -84,8 +84,11 @@ export component Button {
     in property <image> icon <=> base.icon;
     in property <bool> colorize-icon <=> base.colorize-icon;
     in property <length> border-radius: 20px;
-    in property <brush> background-color: CatppuccinPallete.secondary-pane0;
-    in property <brush> checked-color: CatppuccinPallete.secondary-pane1;
+    in property <length> pressed-border-radius: 20px;
+    in property <brush> background-color: CatppuccinPallete.secondary-pane1;
+    in property <brush> checked-color: CatppuccinPallete.surface0;
+
+
 
     callback clicked;
 
@@ -100,9 +103,11 @@ export component Button {
     states [
         pressed when base.pressed: {
             background.background: root.checked-color;
+            background.border-radius: root.pressed-border-radius;
         }
     ]
 
+    
     background := Rectangle {
         width: 100%;
         height: 100%;
@@ -111,7 +116,12 @@ export component Button {
         drop-shadow-color: transparent;
         drop-shadow-blur: 1px;
         drop-shadow-offset-y: 1px;
+
+        animate background, border-radius {
+            duration: 125ms;
+        }
     }
+
     base := ButtonBase {
         layout-padding-left: 24px;
         layout-padding-right: 24px;

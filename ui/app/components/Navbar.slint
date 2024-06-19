@@ -1,0 +1,116 @@
+
+
+// rounded-corner rectangle with circle larger than height in center
+
+/*
+
+idea: rounded-corner rectangle with overlay circle { radius: x } of brighter color masked onto element
+        - horizontal align
+      circle { radius: x } in center with overlay circle following the otehr one
+*/
+
+import { CatppuccinPallete, Icons } from "../../style.slint";
+
+
+component NavbarItem {
+    in property <image> icon;
+    in property <string> text;
+    in property <length> icon-size: 30px;
+    in property <length> icon-hover-size: icon-size + 10px;
+    in property <length> icon-padding: 5px;
+    private property <length> current-icon-size: root.icon-size;
+    private property <bool> hover <=> touch.has-hover;
+    callback clicked <=> touch.clicked;
+    
+    height: root.icon-size + root.icon-padding;
+    width: root.icon-size + root.icon-padding;
+    accessible-role: button;
+    accessible-label: root.text;
+
+    touch := TouchArea {
+        mouse-cursor: pointer;
+    }
+
+    animate current-icon-size {
+        duration: 250ms;
+        easing: ease-in-out;
+    }
+    states [
+        hovered when root.hover: {
+            root.current-icon-size: root.icon-hover-size;
+            img.colorize: CatppuccinPallete.body;
+        }
+    ]
+
+    // rect := Rectangle {
+    //     height: root.icon-size + root.icon-padding;
+    //     width: root.icon-size + root.icon-padding;
+    //     background: CatppuccinPallete.secondary-pane0;
+    //     border-radius: 10px;
+    //     animate background { duration: 125ms; }
+    // }
+
+    GridLayout {
+        height: root.height;
+        width: root.width;
+        
+        Row {
+            img := Image {
+                height: root.current-icon-size;
+                width: root.current-icon-size;
+                source: root.icon;
+                colorize: CatppuccinPallete.subtle-text;
+                image-fit: contain;
+                animate colorize { duration: 125ms; }
+                vertical-alignment: center;
+                horizontal-alignment: center;
+        
+            }
+        }
+
+    }
+}
+
+export component Navbar {
+
+
+    Rectangle {
+        height: root.height;
+        width: root.width;
+        x: layout.x;
+        y: layout.y;
+        background: CatppuccinPallete.secondary-pane0;
+        border-radius: 10px;
+        animate background { duration: 125ms; }
+    }
+    layout := GridLayout {
+        spacing: 20px;
+
+        Row {
+
+            NavbarItem {
+                icon: Icons.link;
+                text: "Connections";
+            }
+            NavbarItem {
+                icon: Icons.puzzle-piece;
+                text: "Modules";
+            }
+            NavbarItem {
+                icon: Icons.house;
+                text: "Dashboard";
+                icon-size: 45px;
+            }
+            NavbarItem {
+                icon: Icons.user;
+                text: "Profiles";
+            }
+            NavbarItem {
+                icon: Icons.gears;
+                text: "Settings";
+            }
+    
+    
+        }
+    }
+}
